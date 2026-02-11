@@ -1,5 +1,6 @@
 class Character extends MoveableObject {
     y = 310;
+    speed = 6;
     imagesThrow = [
         'img/kangaroo/throw/1.png',
         'img/kangaroo/throw/2.png',
@@ -11,24 +12,42 @@ class Character extends MoveableObject {
         'img/kangaroo/throw/8.png',
         'img/kangaroo/throw/9.png'
     ];
+    imagesWalk = [
+        'img/kangaroo/walk/1.png',
+        'img/kangaroo/walk/2.png',
+        'img/kangaroo/walk/3.png',
+        'img/kangaroo/walk/4.png',
+        'img/kangaroo/walk/5.png',
+    ];
+
     imagesJump = [];
     imagesRun = [];
 
     constructor() {
         super();
-        this.loadImage('img/kangaroo/throw/1.png');
-        this.loadImages(this.imagesThrow);
-
+        this.loadImage('img/kangaroo/walk/1.png');
+        this.loadImages(this.imagesWalk);
         this.animate();
     }
 
     animate() {
+        // Logik für die Bewegung (60 FPS)
         setInterval(() => {
-            this.animateThrow(this.imagesThrow);
+            if (this.world.keyboard.RIGHT) {
+                this.moveRight();
+                this.otherDirection = false;
+            }
+            if (this.world.keyboard.LEFT) {
+                this.moveLeft();
+                this.otherDirection = true;
+            }
+        }, 1000 / 60);
+
+        // Logik für die Animation (Bilderwechsel) - Nur bei Tastendruck
+        setInterval(() => {
+            if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                this.playAnimation(this.imagesWalk);
+            }
         }, 100);
-    }
-
-    jump() {
-
     }
 }
