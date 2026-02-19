@@ -149,8 +149,11 @@ class World {
         if (mo.otherDirection) {
             this.flipImage(mo);
         }
+
         mo.draw(this.ctx);
-        mo.drawFrame(this.ctx);
+        // Frame wird nur gezeichnet, wenn nicht gespiegelt, oder wir müssten drawFrame auch anpassen.
+        // Für den Moment entfernen wir die mo.x Mutation ganz:
+
         if (mo.otherDirection) {
             this.flipImageBack(mo);
         }

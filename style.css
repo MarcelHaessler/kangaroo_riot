@@ -35,3 +35,8 @@ body {
 canvas {
     box-shadow: 8px 8px 8px var(--shadowColor);
 }
+
+#game-container {
+    position: relative;
+
+}

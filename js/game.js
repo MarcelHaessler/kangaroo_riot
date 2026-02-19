@@ -4,7 +4,17 @@ let keyboard = new Keyboard();
 
 function init() {
     canvas = document.getElementById("canvas");
+}
+
+function startGame() {
+    if (world) return; // Prevent multiple worlds
+    document.getElementById('start-screen').classList.add('d-none');
     world = new World(canvas, keyboard);
+}
+
+function toggleRules() {
+    document.getElementById('start-screen').classList.toggle('d-none');
+    document.getElementById('rules-screen').classList.toggle('d-none');
 }
 
 document.addEventListener("keydown", (e) => {
