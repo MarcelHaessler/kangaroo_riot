@@ -6,24 +6,34 @@ class Enemy extends MoveableObject {
         'img/fascist/player_one/walk/1.png',
         'img/fascist/player_one/walk/2.png'
     ];
+    imagesLose = [
+        'img/fascist/player_one/lose/1.png'
+    ];
 
-    constructor() {
+    constructor(x) {
         super();
         this.loadImage('img/fascist/player_one/walk/1.png');
         this.loadImages(this.imagesWalk);
-        this.x = 200 + Math.random() * 500; // Random spawn position to the right
-        this.speed = 0.15 + Math.random() * 2.0;
+        this.loadImages(this.imagesLose);
+        this.x = x;
+        this.speed = 0.15 + Math.random() * 0.5;
         this.otherDirection = true;
         this.animate();
     }
 
     animate() {
         setInterval(() => {
-            this.moveLeft();
+            if (this.world && this.world.gameStarted && !this.isDead()) {
+                this.moveLeft();
+            }
         }, 1000 / 60);
 
         setInterval(() => {
-            this.playAnimation(this.imagesWalk);
+            if (this.isDead()) {
+                this.playAnimation(this.imagesLose);
+            } else {
+                this.playAnimation(this.imagesWalk);
+            }
         }, 200);
     }
 }

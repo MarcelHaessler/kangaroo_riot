@@ -11,7 +11,7 @@ class Endboss extends MoveableObject {
     constructor() {
         super().loadImage(this.IMAGES_WALK[0]);
         this.loadImages(this.IMAGES_WALK);
-        this.x = 2500; // Far to the right to appear after other enemies
+        this.x = 4000; // Further back
         this.speed = 0.2; // Significantly slower
         this.otherDirection = true;
         this.animate();
@@ -19,7 +19,9 @@ class Endboss extends MoveableObject {
 
     animate() {
         setInterval(() => {
-            this.moveLeft();
+            if (this.world && this.world.gameStarted) {
+                this.moveLeft();
+            }
         }, 1000 / 60);
 
         setInterval(() => {

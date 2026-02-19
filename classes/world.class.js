@@ -10,15 +10,24 @@ class World {
         new BackgroundObject('img/background/sky.svg', 840 * 5)
     ];
     enemies = [
-        new Enemy(),
-        new Enemy(),
-        new Enemy(),
+        new Enemy(800),
+        new Enemy(1300),
+        new Enemy(1800),
         new Endboss()
     ];
     statusBar = new StatusBar();
+    bookStatusBar = new BookStatusBar();
     throwableObjects = [];
+    collectibleObjects = [
+        new CollectibleObject(500, 350),
+        new CollectibleObject(800, 350),
+        new CollectibleObject(1200, 350),
+        new CollectibleObject(1600, 350),
+        new CollectibleObject(2000, 350)
+    ];
     camera_x = 0;
     lastThrow = 0;
+    gameStarted = false;
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext("2d");
@@ -31,32 +40,55 @@ class World {
 
     run() {
         setInterval(() => {
+            if (!this.gameStarted && (this.keyboard.LEFT || this.keyboard.RIGHT)) {
+                this.gameStarted = true;
+            }
             this.checkCollisions();
             this.checkThrowObjects();
+            this.checkItemCollisions();
         }, 200);
     }
 
     checkThrowObjects() {
         let now = new Date().getTime();
-        if (this.keyboard.D && (now - this.lastThrow) > 1000) {
+        if (this.keyboard.D && (now - this.lastThrow) > 1000 && this.character.books > 0) {
             let book = new ThrowableObject(this.character.x + 50, this.character.y + 50);
             this.throwableObjects.push(book);
+            this.character.books--;
+            this.bookStatusBar.setBooks(this.character.books);
             this.lastThrow = now;
         }
     }
 
+    checkItemCollisions() {
+        this.collectibleObjects.forEach((item, index) => {
+            if (this.character.isColliding(item)) {
+                this.character.books++;
+                this.bookStatusBar.setBooks(this.character.books);
+                this.collectibleObjects.splice(index, 1);
+            }
+        });
+    }
+
     checkCollisions() {
         this.enemies.forEach((enemy) => {
-            if (this.character.isColliding(enemy) && !this.character.isHurt()) {
-                this.character.hit();
-                this.statusBar.setPercentage(this.character.energy);
-                console.log('Collision! Energy:', this.character.energy);
+            if (this.character.isColliding(enemy)) {
+                if (this.character.isAboveGround() && this.character.speedY < 0) {
+                    enemy.energy = 0; // Defeat enemy
+                } else if (!this.character.isHurt() && !enemy.isDead()) {
+                    this.character.hit();
+                    this.statusBar.setPercentage(this.character.energy);
+                    console.log('Collision! Energy:', this.character.energy);
+                }
             }
         });
     }
 
     setWorld() {
         this.character.world = this;
+        this.enemies.forEach(enemy => {
+            enemy.world = this;
+        });
     }
 
     draw() {
@@ -78,11 +110,17 @@ class World {
             this.addToMap(obj);
         });
 
+        this.collectibleObjects.forEach(obj => {
+            this.addToMap(obj);
+        });
+
         this.addToMap(this.character);
 
         this.ctx.translate(-this.camera_x, 0);
         // ----- Space for fixed objects -----
         this.addToMap(this.statusBar);
+        this.addToMap(this.statusBar);
+        this.addToMap(this.bookStatusBar);
 
         // Draw() wird immer wieder aufgerufen
         let self = this;

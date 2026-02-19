@@ -1,6 +1,7 @@
 class Character extends MoveableObject {
     y = 310;
     speed = 6;
+    books = 3;
     imagesThrow = [
         'img/kangaroo/throw/1.png',
         'img/kangaroo/throw/2.png',

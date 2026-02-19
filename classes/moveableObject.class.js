@@ -41,6 +41,10 @@ class MoveableObject extends DrawableObject {
         return timepassed < 1;
     }
 
+    isDead() {
+        return this.energy == 0;
+    }
+
     moveLeft() {
         this.x -= this.speed;
     }
