@@ -1,9 +1,37 @@
+@font-face {
+    font-family: 'LuckiestGuy';
+    src: url('font/LuckiestGuy.ttf');
+}
+
+:root {
+    --headerColor: #EBC796;
+    --shadowColor: #5B3E30;
+}
+
 body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    font-family: LuckiestGuy, sans-serif;
+    color: var(--headerColor);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-image: url("img/background/BackgroundCanvas.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    h1 {
+        font-size: 64px;
+        text-shadow: 6px 6px var(--shadowColor);
+        text-decoration: solid;
+        -webkit-text-stroke: 2px black;
+        margin: 12px;
+    }
 }
 
 canvas {
-    background-color: aqua;
+    box-shadow: 8px 8px 8px var(--shadowColor);
 }

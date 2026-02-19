@@ -19,11 +19,11 @@ class World {
     bookStatusBar = new BookStatusBar();
     throwableObjects = [];
     collectibleObjects = [
-        new CollectibleObject(500, 350),
-        new CollectibleObject(800, 350),
-        new CollectibleObject(1200, 350),
-        new CollectibleObject(1600, 350),
-        new CollectibleObject(2000, 350)
+        new CollectibleObject(500, 420),
+        new CollectibleObject(800, 420),
+        new CollectibleObject(1200, 420),
+        new CollectibleObject(1600, 420),
+        new CollectibleObject(2000, 420)
     ];
     camera_x = 0;
     lastThrow = 0;
@@ -46,6 +46,7 @@ class World {
             this.checkCollisions();
             this.checkThrowObjects();
             this.checkItemCollisions();
+            this.checkThrowableCollisions();
         }, 200);
     }
 
@@ -58,6 +59,21 @@ class World {
             this.bookStatusBar.setBooks(this.character.books);
             this.lastThrow = now;
         }
+    }
+
+    checkThrowableCollisions() {
+        this.throwableObjects.forEach((throwable, tIndex) => {
+            this.enemies.forEach((enemy) => {
+                if (throwable.isColliding(enemy)) {
+                    if (enemy instanceof Endboss) {
+                        enemy.energy -= 1; // 3 hits total
+                    } else {
+                        enemy.energy = 0;
+                    }
+                    this.throwableObjects.splice(tIndex, 1);
+                }
+            });
+        });
     }
 
     checkItemCollisions() {
@@ -73,8 +89,9 @@ class World {
     checkCollisions() {
         this.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
-                if (this.character.isAboveGround() && this.character.speedY < 0) {
+                if (this.character.isAboveGround() && this.character.speedY < 0 && !enemy.isDead() && !(enemy instanceof Endboss)) {
                     enemy.energy = 0; // Defeat enemy
+                    enemy.y += 60; // Shift down for stomp effect
                 } else if (!this.character.isHurt() && !enemy.isDead()) {
                     this.character.hit();
                     this.statusBar.setPercentage(this.character.energy);
@@ -118,7 +135,6 @@ class World {
 
         this.ctx.translate(-this.camera_x, 0);
         // ----- Space for fixed objects -----
-        this.addToMap(this.statusBar);
         this.addToMap(this.statusBar);
         this.addToMap(this.bookStatusBar);
 
