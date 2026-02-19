@@ -4,6 +4,7 @@ class Keyboard {
     UP;
     DOWN;
     SPACE;
+    D;
 
     constructor() {
         this.LEFT = false;
@@ -11,5 +12,6 @@ class Keyboard {
         this.UP = false;
         this.DOWN = false;
         this.SPACE = false;
+        this.D = false;
     }
 }   
