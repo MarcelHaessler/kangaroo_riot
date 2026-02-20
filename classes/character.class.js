@@ -32,6 +32,8 @@ class Character extends MoveableObject {
     ];
     imagesRun = [];
 
+    jump_sound = new Audio('audio/jump.mp3');
+
     constructor() {
         super();
         this.loadImage('img/kangaroo/walk/1.png');
@@ -54,6 +56,7 @@ class Character extends MoveableObject {
             }
             if (this.world.keyboard.SPACE && !this.isAboveGround()) {
                 this.jump();
+                this.jump_sound.play();
             }
         }, 1000 / 60);
 

@@ -30,18 +30,42 @@
         <canvas id="canvas" width="780" height="480"></canvas>
 
         <div id="start-screen" class="screen-overlay">
-            <button class="menu-btn" onclick="startGame()">Start Game</button>
-            <button class="menu-btn" onclick="toggleRules()">Rules</button>
+            <img src="./img/kangaroo/startScreen.png" alt="startScreen">
+            <div>
+                <button class="menu-btn" onclick="startGame()"><img src="./img/items/Buttons/wood.png"
+                        alt="button">Start Game</button>
+                <button class="menu-btn" onclick="toggleRules()"><img src="./img/items/Buttons/wood.png"
+                        alt="button">Rules</button>
+            </div>
+            <img src="./img/fascist/startScreen.png" alt="startScreen">
         </div>
 
         <div id="rules-screen" class="screen-overlay d-none">
-            <h2>How to Play</h2>
-            <ul>
-                <li><strong>Arrows</strong>: Move Left / Right</li>
-                <li><strong>Space</strong>: Jump / Stomp</li>
-                <li><strong>D</strong>: Throw Book</li>
-            </ul>
-            <button class="menu-btn" onclick="toggleRules()">Back</button>
+            <div class="rules-container">
+                <h2>How to Play</h2>
+                <div class="how-to-play">
+                    <div>
+                        <h3>The goal:</h3>
+                        The goal is to neutralize the fascists by jumping and defeat the final boss with the help of
+                        the
+                        books.
+                    </div>
+                    <div>
+                        <h3>Controls:</h3>
+                        <ul>
+                            <li>Arrows: Move Left / Right</li>
+                            <li>Space: Jump / Stomp</li>
+                            <li>D: Throw Book</li>
+                        </ul>
+                    </div>
+                </div>
+                <button class="menu-btn" onclick="toggleRules()"><img src="./img/items/Buttons/wood.png"
+                        alt="button">Back</button>
+                <button id="audio-toggle" onclick="toggleMute()">
+                    <img id="mute-icon" src="./img/items/Buttons/wood.png" alt="mute">Mute
+                </button>
+            </div>
+
         </div>
     </div>
 </body>

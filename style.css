@@ -32,11 +32,125 @@ body {
     }
 }
 
+#game-container {
+    position: relative;
+    width: 780px;
+    height: 480px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
     box-shadow: 8px 8px 8px var(--shadowColor);
 }
 
-#game-container {
-    position: relative;
+.screen-overlay {
+    background-image: url("img/background/startScreen.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    text-align: center;
+    padding: 20px;
+    gap: 40px;
+}
 
+.screen-overlay>img {
+    height: 250px;
+    width: 210px;
+    object-fit: contain;
+    transform: translateY(100px);
+}
+
+.screen-overlay>div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.menu-btn {
+    position: relative;
+    width: 250px;
+    height: 80px;
+    font-size: 32px;
+    font-family: inherit;
+    color: var(--headerColor);
+    text-shadow: 2px 2px var(--shadowColor);
+    -webkit-text-stroke: 2px black;
+    cursor: pointer;
+    margin: 10px;
+    border: none;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.1s ease-in-out;
+}
+
+.menu-btn img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    object-fit: contain;
+}
+
+.menu-btn:hover {
+    transform: scale(1.05);
+}
+
+.menu-btn:active {
+    transform: scale(0.95);
+}
+
+.d-none {
+    display: none !important;
+}
+
+#rules-screen ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.rules-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+    font-size: 24px;
+    text-shadow: 2px 2px var(--shadowColor);
+    text-decoration: solid;
+    -webkit-text-stroke: 2px black;
+}
+
+.how-to-play {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    width: 100%;
+}
+
+.how-to-play>div {
+    flex: 1;
+    font-size: 24px;
 }

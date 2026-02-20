@@ -1,18 +1,21 @@
 class World {
     character = new Character();
     backgroundObjects = [
-        new BackgroundObject('img/background/sky.svg', -840),
-        new BackgroundObject('img/background/Gemini_Generated_Image_47inhj47inhj47in.png', 0),
-        new BackgroundObject('img/background/sky.svg', 840),
-        new BackgroundObject('img/background/Gemini_Generated_Image_47inhj47inhj47in.png', 840 * 2),
-        new BackgroundObject('img/background/sky.svg', 840 * 3),
-        new BackgroundObject('img/background/Gemini_Generated_Image_47inhj47inhj47in.png', 840 * 4),
-        new BackgroundObject('img/background/sky.svg', 840 * 5)
+        new BackgroundObject('img/background/background1.png', -840),
+        new BackgroundObject('img/background/background2.png', 0),
+        new BackgroundObject('img/background/background1.png', 840),
+        new BackgroundObject('img/background/background2.png', 840 * 2),
+        new BackgroundObject('img/background/background1.png', 840 * 3),
+        new BackgroundObject('img/background/background2.png', 840 * 4),
+        new BackgroundObject('img/background/background1.png', 840 * 5)
     ];
     enemies = [
         new Enemy(800),
         new Enemy(1300),
         new Enemy(1800),
+        new Enemy(2500),
+        new Enemy(3000),
+        new Enemy(3500),
         new Endboss()
     ];
     statusBar = new StatusBar();
@@ -28,6 +31,9 @@ class World {
     camera_x = 0;
     lastThrow = 0;
     gameStarted = false;
+
+    throw_sound = new Audio('audio/throw.mp3');
+    hit_sound = new Audio('audio/hit.mp3');
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext("2d");
@@ -58,6 +64,7 @@ class World {
             this.character.books--;
             this.bookStatusBar.setBooks(this.character.books);
             this.lastThrow = now;
+            this.throw_sound.play();
         }
     }
 
@@ -70,6 +77,7 @@ class World {
                     } else {
                         enemy.energy = 0;
                     }
+                    this.hit_sound.play();
                     this.throwableObjects.splice(tIndex, 1);
                 }
             });

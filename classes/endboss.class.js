@@ -34,7 +34,7 @@ class Endboss extends MoveableObject {
         setInterval(() => {
             if (this.isDead()) {
                 this.height = 100; // Defeat height
-                this.y = 360; // Positioned lower on ground
+                this.y = 360; //  Positioned lower on ground
                 this.playAnimation(this.IMAGES_LOSE);
             } else {
                 this.playAnimation(this.IMAGES_WALK);
