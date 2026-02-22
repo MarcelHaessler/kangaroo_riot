@@ -94,6 +94,7 @@ class World {
             this.character.books--;
             this.bookStatusBar.setBooks(this.character.books);
             this.lastThrow = now;
+            this.character.throwAnimation();
             this.throw_sound.currentTime = 0;
             this.throw_sound.play();
         }

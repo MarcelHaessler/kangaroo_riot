@@ -31,6 +31,7 @@ class Character extends MoveableObject {
         'img/kangaroo/jump/7.png'
     ];
     imagesRun = [];
+    isThrowing = false;
 
     jump_sound = new Audio('audio/jump.mp3');
 
@@ -39,6 +40,7 @@ class Character extends MoveableObject {
         this.loadImage('img/kangaroo/walk/1.png');
         this.loadImages(this.imagesWalk);
         this.loadImages(this.imagesJump);
+        this.loadImages(this.imagesThrow);
         this.applyGravity();
         this.animate();
     }
@@ -65,19 +67,41 @@ class Character extends MoveableObject {
     handleJump() {
         if (this.world.keyboard.SPACE && !this.isAboveGround()) {
             this.jump();
+            this.currentImage = 0;
             this.jump_sound.currentTime = 0;
             this.jump_sound.play();
         }
     }
 
     playCharacterAnimation() {
+        // Walk animation (100ms)
         setInterval(() => {
-            if (this.isAboveGround()) {
-                this.playAnimation(this.imagesJump);
-            } else if (this.isWalking()) {
+            if (!this.isAboveGround() && this.isWalking() && !this.isThrowing) {
                 this.playAnimation(this.imagesWalk);
             }
         }, 100);
+
+        // Jump animation (140ms - approx 1s total for 7 frames)
+        setInterval(() => {
+            if (this.isAboveGround()) {
+                this.playAnimationOnce(this.imagesJump);
+            }
+        }, 140);
+
+        // Throw animation (50ms - fast swipe)
+        setInterval(() => {
+            if (this.isThrowing) {
+                this.playAnimationOnce(this.imagesThrow);
+            }
+        }, 50);
+    }
+
+    throwAnimation() {
+        this.isThrowing = true;
+        this.currentImage = 0;
+        setTimeout(() => {
+            this.isThrowing = false;
+        }, 450); // 9 images * 50ms
     }
 
     isWalking() {
