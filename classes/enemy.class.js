@@ -16,7 +16,7 @@ class Enemy extends MoveableObject {
         this.loadImages(this.imagesWalk);
         this.loadImages(this.imagesLose);
         this.x = x;
-        this.speed = 0.15 + Math.random() * 0.5;
+        this.speed = 0.15 + Math.random() * 1.5;
         this.otherDirection = true;
         this.animate();
     }

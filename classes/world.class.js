@@ -16,6 +16,8 @@ class World {
         new Enemy(2500),
         new Enemy(3000),
         new Enemy(3500),
+        new Enemy(4000),
+        new Enemy(4500),
         new Endboss()
     ];
     statusBar = new StatusBar();
@@ -54,7 +56,17 @@ class World {
             this.checkItemCollisions();
             this.checkThrowableCollisions();
             this.checkGameOver();
+            this.checkWin();
         }, 200);
+    }
+
+    checkWin() {
+        this.enemies.forEach((enemy) => {
+            if (enemy instanceof Endboss && enemy.isDead()) {
+                document.getElementById('win-screen').classList.remove('d-none');
+                clearAllIntervals();
+            }
+        });
     }
 
     checkGameOver() {
@@ -105,14 +117,15 @@ class World {
     checkCollisions() {
         this.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
-                if (this.character.isAboveGround() && this.character.speedY < 0 && !enemy.isDead() && !(enemy instanceof Endboss)) {
+                if (enemy instanceof Endboss) {
+                    this.character.energy = 0;
+                } else if (this.character.isAboveGround() && this.character.speedY < 0 && !enemy.isDead()) {
                     enemy.energy = 0; // Defeat enemy
                     enemy.y += 60; // Shift down for stomp effect
                 } else if (!this.character.isHurt() && !enemy.isDead()) {
                     this.character.hit();
-                    this.statusBar.setPercentage(this.character.energy);
-                    console.log('Collision! Energy:', this.character.energy);
                 }
+                this.statusBar.setPercentage(this.character.energy);
             }
         });
     }

@@ -31,6 +31,10 @@ function restartGame() {
     location.reload(); // Simple and clean way to reset all intervals and state
 }
 
+function goToMenu() {
+    location.reload();
+}
+
 function clearAllIntervals() {
     for (let i = 1; i < 9999; i++) window.clearInterval(i);
 }
