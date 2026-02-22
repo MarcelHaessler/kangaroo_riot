@@ -1,5 +1,5 @@
 class Enemy extends MoveableObject {
-    y = 330;
+    y = 350;
     height = 100;
     width = 100;
     imagesWalk = [

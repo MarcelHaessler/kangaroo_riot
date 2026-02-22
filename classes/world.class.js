@@ -24,18 +24,25 @@ class World {
     bookStatusBar = new BookStatusBar();
     throwableObjects = [];
     collectibleObjects = [
-        new CollectibleObject(500, 420),
-        new CollectibleObject(800, 420),
-        new CollectibleObject(1200, 420),
-        new CollectibleObject(1600, 420),
-        new CollectibleObject(2000, 420)
+        new CollectibleObject(500, 150 + Math.random() * 270),
+        new CollectibleObject(800, 150 + Math.random() * 270),
+        new CollectibleObject(1200, 150 + Math.random() * 270),
+        new CollectibleObject(1600, 150 + Math.random() * 270),
+        new CollectibleObject(2000, 150 + Math.random() * 270),
+        new CollectibleObject(2400, 150 + Math.random() * 270),
+        new CollectibleObject(2800, 150 + Math.random() * 270),
+        new CollectibleObject(3200, 150 + Math.random() * 270),
+        new CollectibleObject(3600, 150 + Math.random() * 270),
+        new CollectibleObject(4000, 150 + Math.random() * 270)
     ];
     camera_x = 0;
     lastThrow = 0;
     gameStarted = false;
+    winScreenTriggered = false;
 
-    // throw_sound = new Audio('audio/throw.mp3');
+    throw_sound = new Audio('audio/throw.mp3');
     // hit_sound = new Audio('audio/hit.mp3');
+    crash_sound = new Audio('audio/crash.mp3');
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext("2d");
@@ -62,9 +69,12 @@ class World {
 
     checkWin() {
         this.enemies.forEach((enemy) => {
-            if (enemy instanceof Endboss && enemy.isDead()) {
-                document.getElementById('win-screen').classList.remove('d-none');
-                clearAllIntervals();
+            if (enemy instanceof Endboss && enemy.isDead() && !this.winScreenTriggered) {
+                this.winScreenTriggered = true;
+                setTimeout(() => {
+                    document.getElementById('win-screen').classList.remove('d-none');
+                    clearAllIntervals();
+                }, 1000);
             }
         });
     }
@@ -84,6 +94,7 @@ class World {
             this.character.books--;
             this.bookStatusBar.setBooks(this.character.books);
             this.lastThrow = now;
+            this.throw_sound.currentTime = 0;
             this.throw_sound.play();
         }
     }
@@ -94,10 +105,15 @@ class World {
                 if (throwable.isColliding(enemy)) {
                     if (enemy instanceof Endboss) {
                         enemy.energy -= 1; // 3 hits total
+                        if (enemy.isDead()) {
+                            this.crash_sound.currentTime = 0;
+                            this.crash_sound.play();
+                        }
                     } else {
                         enemy.energy = 0;
+                        this.crash_sound.currentTime = 0;
+                        this.crash_sound.play();
                     }
-                    this.hit_sound.play();
                     this.throwableObjects.splice(tIndex, 1);
                 }
             });
@@ -122,6 +138,8 @@ class World {
                 } else if (this.character.isAboveGround() && this.character.speedY < 0 && !enemy.isDead()) {
                     enemy.energy = 0; // Defeat enemy
                     enemy.y += 60; // Shift down for stomp effect
+                    this.crash_sound.currentTime = 0;
+                    this.crash_sound.play();
                 } else if (!this.character.isHurt() && !enemy.isDead()) {
                     this.character.hit();
                 }
