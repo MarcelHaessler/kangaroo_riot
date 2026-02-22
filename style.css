@@ -154,3 +154,23 @@ canvas {
     flex: 1;
     font-size: 24px;
 }
+
+#audio-toggle {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 120px;
+    height: 40px;
+    font-size: 16px;
+    z-index: 20;
+    margin: 0;
+    -webkit-text-stroke: 1px black;
+}
+
+#audio-toggle:hover {
+    transform: scale(1.1);
+}
+
+#audio-toggle:active {
+    transform: scale(0.9);
+}
