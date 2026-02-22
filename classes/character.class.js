@@ -44,7 +44,11 @@ class Character extends MoveableObject {
     }
 
     animate() {
-        // Logik für die Bewegung (60 FPS)
+        this.moveCharacter();
+        this.playCharacterAnimation();
+    }
+
+    moveCharacter() {
         setInterval(() => {
             if (this.world.keyboard.RIGHT) {
                 this.moveRight();
@@ -54,22 +58,29 @@ class Character extends MoveableObject {
                 this.moveLeft();
                 this.otherDirection = true;
             }
-            if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-                this.jump();
-                this.jump_sound.currentTime = 0;
-                this.jump_sound.play();
-            }
+            this.handleJump();
         }, 1000 / 60);
+    }
 
-        // Logik für die Animation (Bilderwechsel) - Nur bei Tastendruck
+    handleJump() {
+        if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+            this.jump();
+            this.jump_sound.currentTime = 0;
+            this.jump_sound.play();
+        }
+    }
+
+    playCharacterAnimation() {
         setInterval(() => {
             if (this.isAboveGround()) {
                 this.playAnimation(this.imagesJump);
-            } else {
-                if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                    this.playAnimation(this.imagesWalk);
-                }
+            } else if (this.isWalking()) {
+                this.playAnimation(this.imagesWalk);
             }
         }, 100);
+    }
+
+    isWalking() {
+        return this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
     }
 }

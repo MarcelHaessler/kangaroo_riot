@@ -103,21 +103,21 @@ class World {
         this.throwableObjects.forEach((throwable, tIndex) => {
             this.enemies.forEach((enemy) => {
                 if (throwable.isColliding(enemy)) {
-                    if (enemy instanceof Endboss) {
-                        enemy.energy -= 1; // 3 hits total
-                        if (enemy.isDead()) {
-                            this.crash_sound.currentTime = 0;
-                            this.crash_sound.play();
-                        }
-                    } else {
-                        enemy.energy = 0;
-                        this.crash_sound.currentTime = 0;
-                        this.crash_sound.play();
-                    }
-                    this.throwableObjects.splice(tIndex, 1);
+                    this.handleThrowableHit(enemy, tIndex);
                 }
             });
         });
+    }
+
+    handleThrowableHit(enemy, tIndex) {
+        if (enemy instanceof Endboss) {
+            enemy.energy -= 1;
+            if (enemy.isDead()) this.playCrash();
+        } else {
+            enemy.energy = 0;
+            this.playCrash();
+        }
+        this.throwableObjects.splice(tIndex, 1);
     }
 
     checkItemCollisions() {
@@ -133,19 +133,33 @@ class World {
     checkCollisions() {
         this.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
-                if (enemy instanceof Endboss) {
-                    this.character.energy = 0;
-                } else if (this.character.isAboveGround() && this.character.speedY < 0 && !enemy.isDead()) {
-                    enemy.energy = 0; // Defeat enemy
-                    enemy.y += 60; // Shift down for stomp effect
-                    this.crash_sound.currentTime = 0;
-                    this.crash_sound.play();
-                } else if (!this.character.isHurt() && !enemy.isDead()) {
-                    this.character.hit();
-                }
+                this.handleCharacterEnemyCollision(enemy);
                 this.statusBar.setPercentage(this.character.energy);
             }
         });
+    }
+
+    handleCharacterEnemyCollision(enemy) {
+        if (enemy instanceof Endboss) {
+            this.character.energy = 0;
+        } else if (this.isCharacterStomping(enemy)) {
+            enemy.energy = 0;
+            enemy.y += 60;
+            this.playCrash();
+        } else if (!this.character.isHurt() && !enemy.isDead()) {
+            this.character.hit();
+        }
+    }
+
+    isCharacterStomping(enemy) {
+        return this.character.isAboveGround() &&
+            this.character.speedY < 0 &&
+            !enemy.isDead();
+    }
+
+    playCrash() {
+        this.crash_sound.currentTime = 0;
+        this.crash_sound.play();
     }
 
     setWorld() {
@@ -157,39 +171,31 @@ class World {
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
         this.camera_x = -this.character.x + 100;
 
         this.ctx.translate(this.camera_x, 0);
-
-        this.backgroundObjects.forEach(bg => {
-            this.addToMap(bg);
-        });
-
-        this.enemies.forEach(enemy => {
-            this.addToMap(enemy);
-        });
-
-        this.throwableObjects.forEach(obj => {
-            this.addToMap(obj);
-        });
-
-        this.collectibleObjects.forEach(obj => {
-            this.addToMap(obj);
-        });
-
-        this.addToMap(this.character);
-
+        this.drawLevelObjects();
         this.ctx.translate(-this.camera_x, 0);
-        // ----- Space for fixed objects -----
-        this.addToMap(this.statusBar);
-        this.addToMap(this.bookStatusBar);
 
-        // Draw() wird immer wieder aufgerufen
+        this.drawFixedObjects();
+
         let self = this;
         requestAnimationFrame(function () {
             self.draw();
         });
+    }
+
+    drawLevelObjects() {
+        this.backgroundObjects.forEach(bg => this.addToMap(bg));
+        this.enemies.forEach(enemy => this.addToMap(enemy));
+        this.throwableObjects.forEach(obj => this.addToMap(obj));
+        this.collectibleObjects.forEach(obj => this.addToMap(obj));
+        this.addToMap(this.character);
+    }
+
+    drawFixedObjects() {
+        this.addToMap(this.statusBar);
+        this.addToMap(this.bookStatusBar);
     }
 
     addToMap(mo) {

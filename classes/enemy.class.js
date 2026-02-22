@@ -22,12 +22,19 @@ class Enemy extends MoveableObject {
     }
 
     animate() {
+        this.moveEnemy();
+        this.animateEnemy();
+    }
+
+    moveEnemy() {
         setInterval(() => {
             if (this.world && this.world.gameStarted && !this.isDead()) {
                 this.moveLeft();
             }
         }, 1000 / 60);
+    }
 
+    animateEnemy() {
         setInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.imagesLose);

@@ -25,20 +25,31 @@ class Endboss extends MoveableObject {
     }
 
     animate() {
+        this.moveEnemy();
+        this.animateEnemy();
+    }
+
+    moveEnemy() {
         setInterval(() => {
             if (this.world && this.world.gameStarted && !this.isDead()) {
                 this.moveLeft();
             }
         }, 1000 / 60);
+    }
 
+    animateEnemy() {
         setInterval(() => {
             if (this.isDead()) {
-                this.height = 100; // Defeat height
-                this.y = 360; //  Positioned lower on ground
-                this.playAnimation(this.IMAGES_LOSE);
+                this.handleDeath();
             } else {
                 this.playAnimation(this.IMAGES_WALK);
             }
         }, 200);
+    }
+
+    handleDeath() {
+        this.height = 100;
+        this.y = 360;
+        this.playAnimation(this.IMAGES_LOSE);
     }
 }

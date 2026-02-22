@@ -6,14 +6,19 @@ background_music.loop = true;
 
 function init() {
     canvas = document.getElementById("canvas");
-    background_music.play().catch(e => {
-        console.log("Autoplay blocked, waiting for interaction");
-        // Play on first interaction if blocked
+    setupAudioAutoplay();
+    checkRestartSession();
+}
+
+function setupAudioAutoplay() {
+    background_music.play().catch(() => {
         document.addEventListener('click', () => {
             background_music.play();
         }, { once: true });
     });
+}
 
+function checkRestartSession() {
     if (sessionStorage.getItem('restartGame') === 'true') {
         sessionStorage.removeItem('restartGame');
         startGame();
