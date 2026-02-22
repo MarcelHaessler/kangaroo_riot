@@ -13,12 +13,26 @@ function init() {
             background_music.play();
         }, { once: true });
     });
+
+    if (sessionStorage.getItem('restartGame') === 'true') {
+        sessionStorage.removeItem('restartGame');
+        startGame();
+    }
 }
 
 function startGame() {
     if (world) return; // Prevent multiple worlds
     document.getElementById('start-screen').classList.add('d-none');
     world = new World(canvas, keyboard);
+}
+
+function restartGame() {
+    sessionStorage.setItem('restartGame', 'true');
+    location.reload(); // Simple and clean way to reset all intervals and state
+}
+
+function clearAllIntervals() {
+    for (let i = 1; i < 9999; i++) window.clearInterval(i);
 }
 
 function toggleMute() {

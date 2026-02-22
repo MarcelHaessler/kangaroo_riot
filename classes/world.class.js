@@ -32,8 +32,8 @@ class World {
     lastThrow = 0;
     gameStarted = false;
 
-    throw_sound = new Audio('audio/throw.mp3');
-    hit_sound = new Audio('audio/hit.mp3');
+    // throw_sound = new Audio('audio/throw.mp3');
+    // hit_sound = new Audio('audio/hit.mp3');
 
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext("2d");
@@ -53,7 +53,15 @@ class World {
             this.checkThrowObjects();
             this.checkItemCollisions();
             this.checkThrowableCollisions();
+            this.checkGameOver();
         }, 200);
+    }
+
+    checkGameOver() {
+        if (this.character.isDead()) {
+            document.getElementById('game-over-screen').classList.remove('d-none');
+            clearAllIntervals();
+        }
     }
 
     checkThrowObjects() {

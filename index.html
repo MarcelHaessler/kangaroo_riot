@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kangaroo Riot</title>
+    <link rel="icon" type="image/png" href="img/kangaroo/startScreen.png">
     <link rel="stylesheet" href="style.css">
     <script src="classes/drawableObject.class.js"></script>
     <script src="classes/moveableObject.class.js"></script>
@@ -64,6 +65,15 @@
             </div>
 
         </div>
+        <div id="game-over-screen" class="screen-overlay d-none">
+            <div class="game-over-container">
+                <h1>GAME OVER</h1>
+                <button class="menu-btn" onclick="restartGame()">
+                    <img src="./img/items/Buttons/wood.png" alt="button">Restart
+                </button>
+            </div>
+        </div>
+
         <button id="audio-toggle" class="menu-btn" onclick="toggleMute()">
             <img id="mute-icon" src="./img/items/Buttons/wood.png" alt="mute">
             <span>Mute</span>
