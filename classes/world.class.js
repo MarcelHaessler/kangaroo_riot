@@ -65,6 +65,7 @@ class World {
             this.checkThrowableCollisions();
             this.checkGameOver();
             this.checkWin();
+            this.checkEndbossProximity();
         }, 200);
     }
 
@@ -126,7 +127,7 @@ class World {
     checkThrowableCollisions() {
         this.throwableObjects.forEach((throwable, tIndex) => {
             this.enemies.forEach((enemy) => {
-                if (throwable.isColliding(enemy)) {
+                if (throwable.isColliding(enemy) && !enemy.isDead()) {
                     this.handleThrowableHit(enemy, tIndex);
                 }
             });
@@ -141,6 +142,7 @@ class World {
     handleThrowableHit(enemy, tIndex) {
         if (enemy instanceof Endboss) {
             enemy.hit(); // Uses the new hit method with random damage
+            enemy.x += 40;
             this.endbossStatusBar.setPercentage(enemy.energy);
             if (enemy.isDead()) this.playCrash();
         } else {
@@ -177,6 +179,19 @@ class World {
         } else if (!this.character.isHurt() && !enemy.isDead()) {
             this.character.hit(12);
         }
+    }
+
+    /**
+     * Checks if the character has moved past the Endboss and inflicts damage.
+     * Damage is 1 unit per 200ms (5 units per second).
+     */
+    checkEndbossProximity() {
+        this.enemies.forEach((enemy) => {
+            if (enemy instanceof Endboss && this.character.x > enemy.x && !enemy.isDead()) {
+                this.character.hit(1);
+                this.statusBar.setPercentage(this.character.energy);
+            }
+        });
     }
 
     handleEndbossCollision(endboss) {

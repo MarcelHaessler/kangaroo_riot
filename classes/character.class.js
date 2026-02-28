@@ -35,6 +35,10 @@ class Character extends MoveableObject {
         'img/kangaroo/chrash/1.png',
         'img/kangaroo/chrash/2.png'
     ];
+    imagesIdle = [
+        'img/kangaroo/idle/1.png',
+        'img/kangaroo/idle/2.png'
+    ];
     isThrowing = false;
 
     jump_sound = new Audio('audio/jump.mp3');
@@ -46,6 +50,7 @@ class Character extends MoveableObject {
         this.loadImages(this.imagesJump);
         this.loadImages(this.imagesThrow);
         this.loadImages(this.imagesCrash);
+        this.loadImages(this.imagesIdle);
         this.applyGravity();
         this.animate();
     }
@@ -57,11 +62,11 @@ class Character extends MoveableObject {
 
     moveCharacter() {
         setInterval(() => {
-            if (this.world.keyboard.RIGHT) {
+            if (this.world.keyboard.RIGHT && this.x < 4440 - this.width) {
                 this.moveRight();
                 this.otherDirection = false;
             }
-            if (this.world.keyboard.LEFT) {
+            if (this.world.keyboard.LEFT && this.x > 0) {
                 this.moveLeft();
                 this.otherDirection = true;
             }
@@ -84,6 +89,7 @@ class Character extends MoveableObject {
         this.animateWalk();
         this.animateJump();
         this.animateThrow();
+        this.animateIdle();
     }
 
     animateWalk() {
@@ -110,6 +116,14 @@ class Character extends MoveableObject {
                 this.playAnimationOnce(this.imagesThrow);
             }
         }, 50);
+    }
+
+    animateIdle() {
+        setInterval(() => {
+            if (!this.isAboveGround() && !this.isWalking() && !this.isThrowing && !this.isHurt()) {
+                this.playAnimation(this.imagesIdle);
+            }
+        }, 500);
     }
 
     /**
