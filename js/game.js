@@ -10,6 +10,7 @@ function init() {
     loadMuteState();
     setupAudioAutoplay();
     bindTouchEvents();
+    window.addEventListener('resize', checkMobileControls);
 }
 
 function loadMuteState() {
@@ -39,9 +40,7 @@ function startGame() {
     document.getElementById('start-screen').classList.add('d-none');
     document.getElementById('win-screen').classList.add('d-none');
     document.getElementById('game-over-screen').classList.add('d-none');
-    if (isMobileDevice()) {
-        document.getElementById('mobile-controls').classList.remove('d-none');
-    }
+    checkMobileControls();
     world = new World(canvas, keyboard);
 }
 
@@ -55,7 +54,7 @@ function goToMenu() {
     document.getElementById('start-screen').classList.remove('d-none');
     document.getElementById('win-screen').classList.add('d-none');
     document.getElementById('game-over-screen').classList.add('d-none');
-    document.getElementById('mobile-controls').classList.add('d-none');
+    checkMobileControls();
     world = null;
 }
 
@@ -140,4 +139,20 @@ function isMobileDevice() {
     return (('ontouchstart' in window) ||
         (navigator.maxTouchPoints > 0) ||
         (navigator.msMaxTouchPoints > 0));
+}
+
+/**
+ * Shows or hides mobile controls based on device type and current game state.
+ * Only displays controls on touch devices while the game world is active.
+ */
+function checkMobileControls() {
+    let mobileControls = document.getElementById('mobile-controls');
+    let isTouch = isMobileDevice();
+    let isSmallScreen = window.innerWidth <= 1200 && window.innerHeight <= 900;
+
+    if (isTouch && isSmallScreen && world) {
+        mobileControls.classList.remove('d-none');
+    } else {
+        mobileControls.classList.add('d-none');
+    }
 }
