@@ -1,43 +1,56 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let isMuted = true;
 let background_music = new Audio('./audio/gameMusic.mp3');
 background_music.loop = true;
 
 function init() {
     canvas = document.getElementById("canvas");
+    loadMuteState();
     setupAudioAutoplay();
-    checkRestartSession();
+    bindTouchEvents();
+}
+
+function loadMuteState() {
+    let savedMute = localStorage.getItem('isMuted');
+    if (savedMute !== null) {
+        isMuted = savedMute === 'true';
+    } else {
+        isMuted = true; // Default to muted
+    }
+    updateMuteUI();
 }
 
 function setupAudioAutoplay() {
+    if (isMuted) return;
     background_music.play().catch(() => {
         document.addEventListener('click', () => {
-            background_music.play();
+            if (!isMuted) background_music.play();
         }, { once: true });
     });
 }
 
-function checkRestartSession() {
-    if (sessionStorage.getItem('restartGame') === 'true') {
-        sessionStorage.removeItem('restartGame');
-        startGame();
-    }
-}
-
 function startGame() {
-    if (world) return; // Prevent multiple worlds
     document.getElementById('start-screen').classList.add('d-none');
+    document.getElementById('win-screen').classList.add('d-none');
+    document.getElementById('game-over-screen').classList.add('d-none');
+    document.getElementById('mobile-controls').classList.remove('d-none');
     world = new World(canvas, keyboard);
 }
 
 function restartGame() {
-    sessionStorage.setItem('restartGame', 'true');
-    location.reload(); // Simple and clean way to reset all intervals and state
+    clearAllIntervals();
+    startGame();
 }
 
 function goToMenu() {
-    location.reload();
+    clearAllIntervals();
+    document.getElementById('start-screen').classList.remove('d-none');
+    document.getElementById('win-screen').classList.add('d-none');
+    document.getElementById('game-over-screen').classList.add('d-none');
+    document.getElementById('mobile-controls').classList.add('d-none');
+    world = null;
 }
 
 function clearAllIntervals() {
@@ -45,13 +58,20 @@ function clearAllIntervals() {
 }
 
 function toggleMute() {
-    let btnText = document.querySelector('#audio-toggle span');
-    if (background_music.paused) {
-        background_music.play();
-        btnText.innerText = "Mute";
-    } else {
+    isMuted = !isMuted;
+    localStorage.setItem('isMuted', isMuted);
+    updateMuteUI();
+    if (isMuted) {
         background_music.pause();
-        btnText.innerText = "Unmute";
+    } else {
+        background_music.play();
+    }
+}
+
+function updateMuteUI() {
+    let btnText = document.querySelector('#audio-toggle span');
+    if (btnText) {
+        btnText.innerText = isMuted ? "Unmute" : "Mute";
     }
 }
 
@@ -111,3 +131,41 @@ document.addEventListener("keyup", (e) => {
         keyboard.D = false;
     }
 });
+
+function bindTouchEvents() {
+    document.getElementById('btn-left').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = true;
+    });
+    document.getElementById('btn-left').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.LEFT = false;
+    });
+
+    document.getElementById('btn-right').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = true;
+    });
+    document.getElementById('btn-right').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.RIGHT = false;
+    });
+
+    document.getElementById('btn-jump').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.SPACE = true;
+    });
+    document.getElementById('btn-jump').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.SPACE = false;
+    });
+
+    document.getElementById('btn-throw').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        keyboard.D = true;
+    });
+    document.getElementById('btn-throw').addEventListener('touchend', (e) => {
+        e.preventDefault();
+        keyboard.D = false;
+    });
+}

@@ -21,6 +21,7 @@ class World {
         new Endboss()
     ];
     statusBar = new StatusBar();
+    endbossStatusBar = new EndbossStatusBar();
     bookStatusBar = new BookStatusBar();
     throwableObjects = [];
     collectibleObjects = [
@@ -73,6 +74,7 @@ class World {
                 this.winScreenTriggered = true;
                 setTimeout(() => {
                     document.getElementById('win-screen').classList.remove('d-none');
+                    document.getElementById('mobile-controls').classList.add('d-none');
                     clearAllIntervals();
                 }, 1000);
             }
@@ -82,6 +84,7 @@ class World {
     checkGameOver() {
         if (this.character.isDead()) {
             document.getElementById('game-over-screen').classList.remove('d-none');
+            document.getElementById('mobile-controls').classList.add('d-none');
             clearAllIntervals();
         }
     }
@@ -89,14 +92,17 @@ class World {
     checkThrowObjects() {
         let now = new Date().getTime();
         if (this.keyboard.D && (now - this.lastThrow) > 1000 && this.character.books > 0) {
-            let book = new ThrowableObject(this.character.x + 50, this.character.y + 50);
+            let bookX = this.character.otherDirection ? this.character.x - 10 : this.character.x + 50;
+            let book = new ThrowableObject(bookX, this.character.y + 50, this.character.otherDirection);
             this.throwableObjects.push(book);
             this.character.books--;
             this.bookStatusBar.setBooks(this.character.books);
             this.lastThrow = now;
             this.character.throwAnimation();
-            this.throw_sound.currentTime = 0;
-            this.throw_sound.play();
+            if (!isMuted) {
+                this.throw_sound.currentTime = 0;
+                this.throw_sound.play();
+            }
         }
     }
 
@@ -112,7 +118,8 @@ class World {
 
     handleThrowableHit(enemy, tIndex) {
         if (enemy instanceof Endboss) {
-            enemy.energy -= 1;
+            enemy.hit(); // Uses the new hit method with random damage
+            this.endbossStatusBar.setPercentage(enemy.energy);
             if (enemy.isDead()) this.playCrash();
         } else {
             enemy.energy = 0;
@@ -142,13 +149,15 @@ class World {
 
     handleCharacterEnemyCollision(enemy) {
         if (enemy instanceof Endboss) {
-            this.character.energy = 0;
+            if (!this.character.isHurt() && !enemy.isDead()) {
+                this.character.hit(24);
+            }
         } else if (this.isCharacterStomping(enemy)) {
             enemy.energy = 0;
             enemy.y += 60;
             this.playCrash();
         } else if (!this.character.isHurt() && !enemy.isDead()) {
-            this.character.hit();
+            this.character.hit(12);
         }
     }
 
@@ -159,8 +168,10 @@ class World {
     }
 
     playCrash() {
-        this.crash_sound.currentTime = 0;
-        this.crash_sound.play();
+        if (!isMuted) {
+            this.crash_sound.currentTime = 0;
+            this.crash_sound.play();
+        }
     }
 
     setWorld() {
@@ -197,6 +208,11 @@ class World {
     drawFixedObjects() {
         this.addToMap(this.statusBar);
         this.addToMap(this.bookStatusBar);
+
+        let endboss = this.enemies.find(e => e instanceof Endboss);
+        if (endboss && this.character.x > (endboss.x - 700)) {
+            this.addToMap(this.endbossStatusBar);
+        }
     }
 
     addToMap(mo) {

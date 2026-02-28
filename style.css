@@ -223,13 +223,17 @@ canvas {
 }
 
 footer {
-    position: absolute;
-    bottom: 10px;
+    position: fixed;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    text-align: center;
     font-family: LuckiestGuy, sans-serif;
     color: var(--headerColor);
     text-decoration: solid;
     -webkit-text-stroke: 1px black;
     cursor: pointer;
+    z-index: 1000;
 }
 
 footer a {
@@ -295,4 +299,109 @@ footer a {
     color: var(--headerColor);
     -webkit-text-stroke: 1px black;
     margin-top: 10px;
+}
+
+#mobile-controls {
+    display: none;
+}
+
+@media (max-width: 1000px) and (max-height: 450px) {
+    #mobile-controls {
+        display: flex;
+        position: fixed;
+        bottom: 10px;
+        left: 0;
+        right: 0;
+        padding: 0 20px;
+        justify-content: space-between;
+        z-index: 100;
+        box-sizing: border-box;
+    }
+
+    .left-controls,
+    .right-controls {
+        display: flex;
+        gap: 15px;
+    }
+
+    .mobile-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: rgba(91, 62, 48, 0.8);
+        color: var(--headerColor);
+        font-size: 24px;
+        border: 2px solid black;
+        font-family: inherit;
+        -webkit-text-stroke: 1px black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        user-select: none;
+        touch-action: manipulation;
+    }
+
+    .mobile-btn:active {
+        background-color: rgba(91, 62, 48, 1);
+        transform: scale(0.9);
+    }
+
+    #game-container {
+        transform: scale(0.65);
+        transform-origin: top center;
+        margin-top: 0;
+    }
+}
+
+#rotate-device-screen {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--shadowColor);
+    z-index: 9999;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.rotate-container h1 {
+    font-size: 48px;
+    margin-bottom: 50px;
+}
+
+.phone-icon {
+    font-size: 100px;
+    animation: rotatePhone 2s infinite ease-in-out;
+}
+
+@keyframes rotatePhone {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(-90deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+@media (max-width: 450px) and (max-height: 1000px) {
+    #rotate-device-screen {
+        display: flex;
+    }
+
+    #game-container {
+        display: none !important;
+    }
+
+    #mobile-controls {
+        display: none !important;
+    }
 }

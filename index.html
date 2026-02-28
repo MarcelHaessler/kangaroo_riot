@@ -5,13 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kangaroo Riot</title>
-    <link rel="icon" type="image/png" href="img/kangaroo/startScreen.png">
+    <link rel="icon" type="image/png" href="img/startScreenKangaroo.png">
     <link rel="stylesheet" href="style.css">
     <script src="classes/drawableObject.class.js"></script>
     <script src="classes/moveableObject.class.js"></script>
     <script src="classes/character.class.js"></script>
     <script src="classes/enemy.class.js"></script>
     <script src="classes/statusBar.class.js"></script>
+    <script src="classes/endbossStatusBar.class.js"></script>
     <script src="classes/bookStatusBar.class.js"></script>
     <script src="classes/collectibleObject.class.js"></script>
     <script src="classes/throwableObject.class.js"></script>
@@ -31,14 +32,14 @@
         <canvas id="canvas" width="780" height="480"></canvas>
 
         <div id="start-screen" class="screen-overlay">
-            <img src="./img/kangaroo/startScreen.png" alt="startScreen">
+            <img src="img/startScreenKangaroo.png" alt="startScreen">
             <div>
                 <button class="menu-btn" onclick="startGame()"><img src="./img/items/Buttons/wood.png"
                         alt="button">Start Game</button>
                 <button class="menu-btn" onclick="toggleRules()"><img src="./img/items/Buttons/wood.png"
                         alt="button">Rules</button>
             </div>
-            <img src="./img/fascist/startScreen.png" alt="startScreen">
+            <img src="img/startScreenFascist.png" alt="startScreen">
         </div>
 
         <div id="rules-screen" class="screen-overlay d-none">
@@ -68,9 +69,14 @@
         <div id="game-over-screen" class="screen-overlay d-none">
             <div class="game-over-container">
                 <h1>GAME OVER</h1>
-                <button class="menu-btn" onclick="restartGame()">
-                    <img src="./img/items/Buttons/wood.png" alt="button">Restart
-                </button>
+                <div class="menu-btn-group">
+                    <button class="menu-btn" onclick="restartGame()">
+                        <img src="./img/items/Buttons/wood.png" alt="button">Restart
+                    </button>
+                    <button class="menu-btn" onclick="goToMenu()">
+                        <img src="./img/items/Buttons/wood.png" alt="button">Main Menu
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -92,6 +98,24 @@
             <img id="mute-icon" src="./img/items/Buttons/wood.png" alt="mute">
             <span>Mute</span>
         </button>
+    </div>
+
+    <div id="mobile-controls" class="d-none">
+        <div class="left-controls">
+            <button id="btn-left" class="mobile-btn">◄</button>
+            <button id="btn-right" class="mobile-btn">►</button>
+        </div>
+        <div class="right-controls">
+            <button id="btn-throw" class="mobile-btn">D</button>
+            <button id="btn-jump" class="mobile-btn">▲</button>
+        </div>
+    </div>
+
+    <div id="rotate-device-screen">
+        <div class="rotate-container">
+            <h1>PLEASE ROTATE DEVICE</h1>
+            <div class="phone-icon">📱</div>
+        </div>
     </div>
 </body>
 <footer>

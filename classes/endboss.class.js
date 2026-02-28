@@ -2,8 +2,9 @@ class Endboss extends MoveableObject {
     height = 300; // Increased size (approx 1.5x of normal enemy height if normal is ~130-150)
     width = 200;
     y = 150; // Positioned on ground
-    energy = 3;
+    energy = 100;
     autoWidth = true;
+    hitsToDefeat = 3;
 
     IMAGES_WALK = [
         'img/fascist/Endboss/walk/1.png',
@@ -19,9 +20,19 @@ class Endboss extends MoveableObject {
         this.loadImages(this.IMAGES_WALK);
         this.loadImages(this.IMAGES_LOSE);
         this.x = 4000; // Further back
-        this.speed = 0.2; // Significantly slower
+        this.speed = 0.4; // Significantly slower
         this.otherDirection = true;
+        this.hitsToDefeat = Math.floor(Math.random() * 3) + 3; // 3, 4, or 5
         this.animate();
+    }
+
+    hit() {
+        this.energy -= (100 / this.hitsToDefeat);
+        if (this.energy <= 0) {
+            this.energy = 0;
+        } else {
+            this.lastHit = new Date().getTime();
+        }
     }
 
     animate() {
