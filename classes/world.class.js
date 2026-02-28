@@ -42,7 +42,6 @@ class World {
     winScreenTriggered = false;
 
     throw_sound = new Audio('audio/throw.mp3');
-    // hit_sound = new Audio('audio/hit.mp3');
     crash_sound = new Audio('audio/crash.mp3');
 
     constructor(canvas, keyboard) {
@@ -66,7 +65,7 @@ class World {
             this.checkGameOver();
             this.checkWin();
             this.checkEndbossProximity();
-        }, 200);
+        }, 50);
     }
 
     checkWin() {
@@ -141,7 +140,7 @@ class World {
      */
     handleThrowableHit(enemy, tIndex) {
         if (enemy instanceof Endboss) {
-            enemy.hit(); // Uses the new hit method with random damage
+            enemy.hit();
             enemy.x += 40;
             this.endbossStatusBar.setPercentage(enemy.energy);
             if (enemy.isDead()) this.playCrash();
@@ -286,8 +285,7 @@ class World {
         }
 
         mo.draw(this.ctx);
-        // Frame wird nur gezeichnet, wenn nicht gespiegelt, oder wir müssten drawFrame auch anpassen.
-        // Für den Moment entfernen wir die mo.x Mutation ganz:
+
 
         if (mo.otherDirection) {
             this.flipImageBack(mo);

@@ -1,7 +1,7 @@
 class Endboss extends MoveableObject {
-    height = 300; // Increased size (approx 1.5x of normal enemy height if normal is ~130-150)
+    height = 300;
     width = 200;
-    y = 150; // Positioned on ground
+    y = 150;
     energy = 100;
     autoWidth = true;
     hitsToDefeat = 3;
@@ -26,10 +26,10 @@ class Endboss extends MoveableObject {
         this.loadImages(this.IMAGES_WALK);
         this.loadImages(this.IMAGES_LOSE);
         this.loadImages(this.IMAGES_HIT);
-        this.x = 4000; // Further back
-        this.speed = 0.6; // Significantly slower
+        this.x = 4000;
+        this.speed = 0.6;
         this.otherDirection = true;
-        this.hitsToDefeat = Math.floor(Math.random() * 3) + 3; // 3, 4, or 5
+        this.hitsToDefeat = Math.floor(Math.random() * 3) + 3;
         this.animate();
     }
 

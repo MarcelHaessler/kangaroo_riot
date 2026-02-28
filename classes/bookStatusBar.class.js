@@ -1,6 +1,6 @@
 class BookStatusBar extends DrawableObject {
     x = 20;
-    y = 50; // Positioned below health bar (which is at y=0)
+    y = 50;
     width = 60;
     height = 60;
     books = 3;

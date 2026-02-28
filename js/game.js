@@ -10,7 +10,13 @@ function init() {
     loadMuteState();
     setupAudioAutoplay();
     bindTouchEvents();
-    window.addEventListener('resize', checkMobileControls);
+    window.addEventListener('resize', onResize);
+    checkOrientation();
+}
+
+function onResize() {
+    checkMobileControls();
+    checkOrientation();
 }
 
 function loadMuteState() {
@@ -18,7 +24,7 @@ function loadMuteState() {
     if (savedMute !== null) {
         isMuted = savedMute === 'true';
     } else {
-        isMuted = true; // Default to muted
+        isMuted = true;
     }
     updateMuteUI();
 }
@@ -40,8 +46,8 @@ function startGame() {
     document.getElementById('start-screen').classList.add('d-none');
     document.getElementById('win-screen').classList.add('d-none');
     document.getElementById('game-over-screen').classList.add('d-none');
-    checkMobileControls();
     world = new World(canvas, keyboard);
+    checkMobileControls();
 }
 
 function restartGame() {
@@ -54,6 +60,7 @@ function goToMenu() {
     document.getElementById('start-screen').classList.remove('d-none');
     document.getElementById('win-screen').classList.add('d-none');
     document.getElementById('game-over-screen').classList.add('d-none');
+    document.getElementById('toggle-controls').classList.add('d-none');
     checkMobileControls();
     world = null;
 }
@@ -143,16 +150,63 @@ function isMobileDevice() {
 
 /**
  * Shows or hides mobile controls based on device type and current game state.
- * Only displays controls on touch devices while the game world is active.
+ * Only displays controls on touch devices with a screen width under 1200px.
  */
 function checkMobileControls() {
     let mobileControls = document.getElementById('mobile-controls');
+    let toggleBtn = document.getElementById('toggle-controls');
     let isTouch = isMobileDevice();
-    let isSmallScreen = window.innerWidth <= 1200 && window.innerHeight <= 900;
+    let isSmallScreen = window.innerWidth < 1200;
+
+    if (world) {
+        toggleBtn.classList.remove('d-none');
+    } else {
+        toggleBtn.classList.add('d-none');
+    }
 
     if (isTouch && isSmallScreen && world) {
         mobileControls.classList.remove('d-none');
+        toggleBtn.innerText = '🎮 off';
     } else {
         mobileControls.classList.add('d-none');
+        toggleBtn.innerText = '🎮 on';
+    }
+}
+
+/**
+ * Manually toggles mobile controls visibility.
+ * Updates the toggle button text accordingly.
+ */
+function toggleMobileControls() {
+    let mobileControls = document.getElementById('mobile-controls');
+    let toggleBtn = document.getElementById('toggle-controls');
+    let isHidden = mobileControls.classList.contains('d-none');
+
+    if (isHidden) {
+        mobileControls.classList.remove('d-none');
+        toggleBtn.innerText = '🎮 off';
+    } else {
+        mobileControls.classList.add('d-none');
+        toggleBtn.innerText = '🎮 on';
+    }
+}
+
+/**
+ * Enforces landscape orientation on touch devices under 1200px width.
+ * Shows the rotate-device screen if the aspect ratio is less than 4:3.
+ */
+function checkOrientation() {
+    let rotateScreen = document.getElementById('rotate-device-screen');
+    let gameContainer = document.getElementById('game-container');
+    let isTouch = isMobileDevice();
+    let isSmallDevice = window.innerWidth < 1200;
+    let isPortrait = window.innerWidth / window.innerHeight < 4 / 3;
+
+    if (isTouch && isSmallDevice && isPortrait) {
+        rotateScreen.style.display = 'flex';
+        gameContainer.style.display = 'none';
+    } else {
+        rotateScreen.style.display = 'none';
+        gameContainer.style.display = '';
     }
 }

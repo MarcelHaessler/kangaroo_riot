@@ -302,6 +302,26 @@ footer a {
     margin-top: 10px;
 }
 
+#toggle-controls {
+    position: fixed;
+    top: 8px;
+    right: 8px;
+    z-index: 200;
+    background: rgba(91, 62, 48, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    color: white;
+    font-size: 18px;
+    padding: 4px 8px;
+    cursor: pointer;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+#toggle-controls.d-none {
+    display: none !important;
+}
+
 #mobile-controls {
     display: flex;
     position: fixed;
@@ -405,19 +425,5 @@ footer a {
 
     100% {
         transform: rotate(0deg);
-    }
-}
-
-@media (max-width: 660px) and (max-height: 1000px) {
-    #rotate-device-screen {
-        display: flex;
-    }
-
-    #game-container {
-        display: none !important;
-    }
-
-    #mobile-controls {
-        display: none !important;
     }
 }

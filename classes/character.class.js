@@ -135,7 +135,7 @@ class Character extends MoveableObject {
         this.currentImage = 0;
         setTimeout(() => {
             this.isThrowing = false;
-        }, 450); // 9 images * 50ms
+        }, 450);
     }
 
     /**
