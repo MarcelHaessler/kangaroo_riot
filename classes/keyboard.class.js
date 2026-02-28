@@ -1,3 +1,6 @@
+/**
+ * Data class representing the state of various keyboard inputs.
+ */
 class Keyboard {
     LEFT;
     RIGHT;
@@ -6,6 +9,9 @@ class Keyboard {
     SPACE;
     D;
 
+    /**
+     * Initializes all key states to false.
+     */
     constructor() {
         this.LEFT = false;
         this.RIGHT = false;

@@ -7,11 +7,19 @@ class DrawableObject {
     imageCache = {};
     currentImage = 0;
 
+    /**
+     * Loads a single image file into an HTMLImageElement.
+     * @param {string} path - The path to the image asset
+     */
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;
     }
 
+    /**
+     * Native draw method for objects with a single static image.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     */
     draw(ctx) {
         if (this.img) {
             this.updateAutoWidth();
@@ -29,6 +37,10 @@ class DrawableObject {
         }
     }
 
+    /**
+     * Optional debugging tool to draw a colored rectangle frame around the object.
+     * @param {CanvasRenderingContext2D} ctx - The canvas rendering context
+     */
     drawFrame(ctx) {
         if (this instanceof Character || this instanceof Enemy || this instanceof StatusBar) {
             ctx.beginPath();
@@ -39,6 +51,10 @@ class DrawableObject {
         }
     }
 
+    /**
+     * Iterates through an array of image paths and caches them as Image elements.
+     * @param {string[]} arr - An array of image paths
+     */
     loadImages(arr) {
         arr.forEach(path => {
             let img = new Image();

@@ -5,6 +5,10 @@ let isMuted = true;
 let background_music = new Audio('./audio/gameMusic.mp3');
 background_music.loop = true;
 
+/**
+ * Initializes the game by setting up the canvas, loading state, 
+ * and binding global events.
+ */
 function init() {
     canvas = document.getElementById("canvas");
     loadMuteState();
@@ -14,11 +18,17 @@ function init() {
     checkOrientation();
 }
 
+/**
+ * Handles window resize events by re-checking orientation and mobile control visibility.
+ */
 function onResize() {
     checkMobileControls();
     checkOrientation();
 }
 
+/**
+ * Loads the mute state from local storage and updates the UI accordingly.
+ */
 function loadMuteState() {
     let savedMute = localStorage.getItem('isMuted');
     if (savedMute !== null) {
@@ -42,6 +52,9 @@ function setupAudioAutoplay() {
     });
 }
 
+/**
+ * Starts the game by hiding the start screen and initializing the game world.
+ */
 function startGame() {
     document.getElementById('start-screen').classList.add('d-none');
     document.getElementById('win-screen').classList.add('d-none');
@@ -50,11 +63,17 @@ function startGame() {
     checkMobileControls();
 }
 
+/**
+ * Restarts the game by clearing all intervals and starting a fresh game instance.
+ */
 function restartGame() {
     clearAllIntervals();
     startGame();
 }
 
+/**
+ * Returns to the main menu by clearing intervals and showing the start screen.
+ */
 function goToMenu() {
     clearAllIntervals();
     document.getElementById('start-screen').classList.remove('d-none');
@@ -73,6 +92,9 @@ function clearAllIntervals() {
     for (let i = 1; i < 9999; i++) window.clearInterval(i);
 }
 
+/**
+ * Toggles the game's audio mute state and updates the UI.
+ */
 function toggleMute() {
     isMuted = !isMuted;
     localStorage.setItem('isMuted', isMuted);
@@ -84,6 +106,9 @@ function toggleMute() {
     }
 }
 
+/**
+ * Updates the mute button text based on the current mute state.
+ */
 function updateMuteUI() {
     let btnText = document.querySelector('#audio-toggle span');
     if (btnText) {
@@ -91,6 +116,9 @@ function updateMuteUI() {
     }
 }
 
+/**
+ * Toggles the visibility of the rules screen.
+ */
 function toggleRules() {
     document.getElementById('start-screen').classList.toggle('d-none');
     document.getElementById('rules-screen').classList.toggle('d-none');
@@ -113,6 +141,9 @@ function handleKeyEvent(key, isPressed) {
     if (key == "d") keyboard.D = isPressed;
 }
 
+/**
+ * Binds touch events to the mobile control buttons.
+ */
 function bindTouchEvents() {
     bindTouchBtn('btn-left', 'LEFT');
     bindTouchBtn('btn-right', 'RIGHT');

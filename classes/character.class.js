@@ -43,6 +43,9 @@ class Character extends MoveableObject {
 
     jump_sound = new Audio('audio/jump.mp3');
 
+    /**
+     * Initializes the character, loading its various animation sets.
+     */
     constructor() {
         super();
         this.loadImage('img/kangaroo/walk/1.png');
@@ -55,11 +58,17 @@ class Character extends MoveableObject {
         this.animate();
     }
 
+    /**
+     * Starts the character's movement and animation logic.
+     */
     animate() {
         this.moveCharacter();
         this.playCharacterAnimation();
     }
 
+    /**
+     * Handles horizontal movement input and applies boundaries.
+     */
     moveCharacter() {
         setInterval(() => {
             if (this.world.keyboard.RIGHT && this.x < 4440 - this.width) {
@@ -74,6 +83,9 @@ class Character extends MoveableObject {
         }, 1000 / 60);
     }
 
+    /**
+     * Handles jumping logic when the space key is pressed.
+     */
     handleJump() {
         if (this.world.keyboard.SPACE && !this.isAboveGround()) {
             this.jump();
@@ -85,6 +97,9 @@ class Character extends MoveableObject {
         }
     }
 
+    /**
+     * Triggers the various animation states for the character.
+     */
     playCharacterAnimation() {
         this.animateWalk();
         this.animateJump();
@@ -92,6 +107,9 @@ class Character extends MoveableObject {
         this.animateIdle();
     }
 
+    /**
+     * Plays the walking or crash animation based on the character's state.
+     */
     animateWalk() {
         setInterval(() => {
             if (this.isHurt()) {
@@ -102,6 +120,9 @@ class Character extends MoveableObject {
         }, 100);
     }
 
+    /**
+     * Plays the jumping animation when the character is in the air.
+     */
     animateJump() {
         setInterval(() => {
             if (this.isAboveGround() && !this.isHurt()) {
@@ -110,6 +131,9 @@ class Character extends MoveableObject {
         }, 140);
     }
 
+    /**
+     * Plays the throwing animation when the isThrowing flag is active.
+     */
     animateThrow() {
         setInterval(() => {
             if (this.isThrowing) {
@@ -118,6 +142,9 @@ class Character extends MoveableObject {
         }, 50);
     }
 
+    /**
+     * Plays the idle animation when the character is stationary and not performing other actions.
+     */
     animateIdle() {
         setInterval(() => {
             if (!this.isAboveGround() && !this.isWalking() && !this.isThrowing && !this.isHurt()) {

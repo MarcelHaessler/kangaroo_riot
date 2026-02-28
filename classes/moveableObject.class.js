@@ -1,3 +1,7 @@
+/**
+ * Represents an object that can move and interact with the physical world.
+ * @extends DrawableObject
+ */
 class MoveableObject extends DrawableObject {
     speed = 0.05;
     speedY = 0;
@@ -6,6 +10,9 @@ class MoveableObject extends DrawableObject {
     energy = 100;
     lastHit = 0;
 
+    /**
+     * Applies gravity to the object, causing it to fall if above ground.
+     */
     applyGravity() {
         setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
@@ -15,10 +22,19 @@ class MoveableObject extends DrawableObject {
         }, 1000 / 25);
     }
 
+    /**
+     * Checks if the object is currently above the ground level.
+     * @returns {boolean} True if the object is in the air
+     */
     isAboveGround() {
         return this.y < 310;
     }
 
+    /**
+     * Detects collision between this object and another moveable object.
+     * @param {MoveableObject} mo - The other object to check collision with
+     * @returns {boolean} True if the objects are colliding
+     */
     isColliding(mo) {
         return this.x + this.width > mo.x &&
             this.y + this.height > mo.y &&
@@ -51,22 +67,39 @@ class MoveableObject extends DrawableObject {
         return timepassed < 1;
     }
 
+    /**
+     * Checks if the object's energy has reached zero.
+     * @returns {boolean} True if the object is dead
+     */
     isDead() {
         return this.energy == 0;
     }
 
+    /**
+     * Moves the object to the left by its speed.
+     */
     moveLeft() {
         this.x -= this.speed;
     }
 
+    /**
+     * Moves the object to the right by its speed.
+     */
     moveRight() {
         this.x += this.speed;
     }
 
+    /**
+     * Makes the object jump by setting its vertical speed.
+     */
     jump() {
         this.speedY = 30;
     }
 
+    /**
+     * Cycles through an array of images to play an animation.
+     * @param {string[]} images - An array of image paths
+     */
     playAnimation(images) {
         let i = this.currentImage % images.length;
         let path = images[i];
@@ -74,6 +107,10 @@ class MoveableObject extends DrawableObject {
         this.currentImage++;
     }
 
+    /**
+     * Plays an animation once and stays on the last frame.
+     * @param {string[]} images - An array of image paths
+     */
     playAnimationOnce(images) {
         let i = this.currentImage;
         if (i >= images.length) {

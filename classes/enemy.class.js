@@ -10,6 +10,10 @@ class Enemy extends MoveableObject {
         'img/fascist/player_one/lose/1.png'
     ];
 
+    /**
+     * Initializes a basic enemy with a random speed.
+     * @param {number} x - The initial x-position
+     */
     constructor(x) {
         super();
         this.loadImage('img/fascist/player_one/walk/1.png');
@@ -21,11 +25,17 @@ class Enemy extends MoveableObject {
         this.animate();
     }
 
+    /**
+     * Starts the enemy's logic loops for movement and animation.
+     */
     animate() {
         this.moveEnemy();
         this.animateEnemy();
     }
 
+    /**
+     * Manages the enemy's horizontal movement logic (always moving left if alive).
+     */
     moveEnemy() {
         setInterval(() => {
             if (this.world && this.world.gameStarted && !this.isDead()) {
@@ -34,6 +44,9 @@ class Enemy extends MoveableObject {
         }, 1000 / 60);
     }
 
+    /**
+     * Manages switching between walk and lose (defeated) animations.
+     */
     animateEnemy() {
         setInterval(() => {
             if (this.isDead()) {

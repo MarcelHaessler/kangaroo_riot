@@ -44,6 +44,11 @@ class World {
     throw_sound = new Audio('audio/throw.mp3');
     crash_sound = new Audio('audio/crash.mp3');
 
+    /**
+     * Initializes the game world with a canvas and keyboard input.
+     * @param {HTMLCanvasElement} canvas - The game canvas element
+     * @param {Keyboard} keyboard - The keyboard input handler
+     */
     constructor(canvas, keyboard) {
         this.ctx = canvas.getContext("2d");
         this.canvas = canvas;
@@ -53,6 +58,9 @@ class World {
         this.run();
     }
 
+    /**
+     * Starts the main game loop, checking for collisions and state changes.
+     */
     run() {
         setInterval(() => {
             if (!this.gameStarted && (this.keyboard.LEFT || this.keyboard.RIGHT)) {
@@ -65,9 +73,12 @@ class World {
             this.checkGameOver();
             this.checkWin();
             this.checkEndbossProximity();
-        }, 50);
+        }, 20);
     }
 
+    /**
+     * Checks if any endboss is dead to trigger the win screen.
+     */
     checkWin() {
         this.enemies.forEach((enemy) => {
             if (enemy instanceof Endboss && enemy.isDead() && !this.winScreenTriggered) {
@@ -81,6 +92,9 @@ class World {
         });
     }
 
+    /**
+     * Checks if the character is dead to trigger the game over screen.
+     */
     checkGameOver() {
         if (this.character.isDead()) {
             document.getElementById('game-over-screen').classList.remove('d-none');
@@ -89,6 +103,9 @@ class World {
         }
     }
 
+    /**
+     * Continuously checks if a new book can be thrown based on input and cooldown.
+     */
     checkThrowObjects() {
         let now = new Date().getTime();
         if (this.canThrowBook(now)) {
@@ -106,6 +123,9 @@ class World {
         return this.keyboard.D && (now - this.lastThrow) > 1000 && this.character.books > 0;
     }
 
+    /**
+     * Creates and shoots a throwable book object from the character's position.
+     */
     throwBook() {
         let bookX = this.character.otherDirection ? this.character.x - 10 : this.character.x + 50;
         let book = new ThrowableObject(bookX, this.character.y + 50, this.character.otherDirection);
@@ -116,6 +136,9 @@ class World {
         this.playThrowSound();
     }
 
+    /**
+     * Plays the book throwing sound if not muted.
+     */
     playThrowSound() {
         if (!isMuted) {
             this.throw_sound.currentTime = 0;
@@ -123,6 +146,9 @@ class World {
         }
     }
 
+    /**
+     * Checks for collisions between thrown projectiles and active enemies.
+     */
     checkThrowableCollisions() {
         this.throwableObjects.forEach((throwable, tIndex) => {
             this.enemies.forEach((enemy) => {
@@ -151,6 +177,9 @@ class World {
         this.throwableObjects.splice(tIndex, 1);
     }
 
+    /**
+     * Checks for collisions between the character and collectible items.
+     */
     checkItemCollisions() {
         this.collectibleObjects.forEach((item, index) => {
             if (this.character.isColliding(item)) {
@@ -161,6 +190,9 @@ class World {
         });
     }
 
+    /**
+     * Checks for general collisions between the character and enemies.
+     */
     checkCollisions() {
         this.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
@@ -170,6 +202,10 @@ class World {
         });
     }
 
+    /**
+     * Dispatches collision logic depending on the enemy type (regular vs endboss).
+     * @param {MoveableObject} enemy - The enemy involved in the collision
+     */
     handleCharacterEnemyCollision(enemy) {
         if (enemy instanceof Endboss) {
             this.handleEndbossCollision(enemy);
@@ -193,12 +229,20 @@ class World {
         });
     }
 
+    /**
+     * Inflicts damage on the character when colliding with the Endboss.
+     * @param {Endboss} endboss - The endboss instance
+     */
     handleEndbossCollision(endboss) {
         if (!this.character.isHurt() && !endboss.isDead()) {
             this.character.hit(24);
         }
     }
 
+    /**
+     * Handles the logic for defeat of a basic enemy when stomped.
+     * @param {MoveableObject} enemy - The stomped enemy
+     */
     handleEnemyStomp(enemy) {
         enemy.energy = 0;
         enemy.y += 60;
@@ -217,6 +261,9 @@ class World {
             !enemy.isDead();
     }
 
+    /**
+     * Plays the enemy defeat (crash) sound if not muted.
+     */
     playCrash() {
         if (!isMuted) {
             this.crash_sound.currentTime = 0;
@@ -235,6 +282,9 @@ class World {
         });
     }
 
+    /**
+     * Clears and redraws the entire game scene from a new perspective.
+     */
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.camera_x = -this.character.x + 100;
@@ -242,6 +292,9 @@ class World {
         this.scheduleNextFrame();
     }
 
+    /**
+     * Coordinates the translation of the context to draw stationary vs scrolling objects.
+     */
     drawWorldComponents() {
         this.ctx.translate(this.camera_x, 0);
         this.drawLevelObjects();
@@ -249,6 +302,9 @@ class World {
         this.drawFixedObjects();
     }
 
+    /**
+     * Requests the next animation frame to maintain the draw loop.
+     */
     scheduleNextFrame() {
         let self = this;
         requestAnimationFrame(function () {
@@ -256,6 +312,9 @@ class World {
         });
     }
 
+    /**
+     * Draws all game entities that scroll with the camera.
+     */
     drawLevelObjects() {
         this.backgroundObjects.forEach(bg => this.addToMap(bg));
         this.enemies.forEach(enemy => this.addToMap(enemy));
@@ -264,6 +323,9 @@ class World {
         this.addToMap(this.character);
     }
 
+    /**
+     * Draws stationary UI elements (status bars).
+     */
     drawFixedObjects() {
         this.addToMap(this.statusBar);
         this.addToMap(this.bookStatusBar);
@@ -292,6 +354,10 @@ class World {
         }
     }
 
+    /**
+     * Temporarily flips the canvas context horizontally for objects facing left.
+     * @param {MoveableObject} mo - The object whose context should be flipped
+     */
     flipImage(mo) {
         this.ctx.save();
         this.ctx.translate(mo.width, 0);
@@ -299,6 +365,10 @@ class World {
         mo.x = mo.x * -1;
     }
 
+    /**
+     * Restores the canvas context to its original state after a flipped drawing.
+     * @param {MoveableObject} mo - The object whose context was flipped
+     */
     flipImageBack(mo) {
         mo.x = mo.x * -1;
         this.ctx.restore();
