@@ -91,18 +91,35 @@ class World {
 
     checkThrowObjects() {
         let now = new Date().getTime();
-        if (this.keyboard.D && (now - this.lastThrow) > 1000 && this.character.books > 0) {
-            let bookX = this.character.otherDirection ? this.character.x - 10 : this.character.x + 50;
-            let book = new ThrowableObject(bookX, this.character.y + 50, this.character.otherDirection);
-            this.throwableObjects.push(book);
-            this.character.books--;
-            this.bookStatusBar.setBooks(this.character.books);
+        if (this.canThrowBook(now)) {
+            this.throwBook();
             this.lastThrow = now;
-            this.character.throwAnimation();
-            if (!isMuted) {
-                this.throw_sound.currentTime = 0;
-                this.throw_sound.play();
-            }
+        }
+    }
+
+    /**
+     * Checks if the throw cooldown has passed and the character has books left.
+     * @param {number} now - The current timestamp in milliseconds
+     * @returns {boolean} True if a book can be thrown
+     */
+    canThrowBook(now) {
+        return this.keyboard.D && (now - this.lastThrow) > 1000 && this.character.books > 0;
+    }
+
+    throwBook() {
+        let bookX = this.character.otherDirection ? this.character.x - 10 : this.character.x + 50;
+        let book = new ThrowableObject(bookX, this.character.y + 50, this.character.otherDirection);
+        this.throwableObjects.push(book);
+        this.character.books--;
+        this.bookStatusBar.setBooks(this.character.books);
+        this.character.throwAnimation();
+        this.playThrowSound();
+    }
+
+    playThrowSound() {
+        if (!isMuted) {
+            this.throw_sound.currentTime = 0;
+            this.throw_sound.play();
         }
     }
 
@@ -116,6 +133,11 @@ class World {
         });
     }
 
+    /**
+     * Deals damage to the struck enemy and removes the projectile.
+     * @param {MoveableObject} enemy - The enemy that was hit
+     * @param {number} tIndex - The array index of the thrown object
+     */
     handleThrowableHit(enemy, tIndex) {
         if (enemy instanceof Endboss) {
             enemy.hit(); // Uses the new hit method with random damage
@@ -149,18 +171,32 @@ class World {
 
     handleCharacterEnemyCollision(enemy) {
         if (enemy instanceof Endboss) {
-            if (!this.character.isHurt() && !enemy.isDead()) {
-                this.character.hit(24);
-            }
+            this.handleEndbossCollision(enemy);
         } else if (this.isCharacterStomping(enemy)) {
-            enemy.energy = 0;
-            enemy.y += 60;
-            this.playCrash();
+            this.handleEnemyStomp(enemy);
         } else if (!this.character.isHurt() && !enemy.isDead()) {
             this.character.hit(12);
         }
     }
 
+    handleEndbossCollision(endboss) {
+        if (!this.character.isHurt() && !endboss.isDead()) {
+            this.character.hit(24);
+        }
+    }
+
+    handleEnemyStomp(enemy) {
+        enemy.energy = 0;
+        enemy.y += 60;
+        this.playCrash();
+    }
+
+    /**
+     * Checks if the character is currently falling downwards, 
+     * indicating a stomp attack onto a target.
+     * @param {MoveableObject} enemy - The enemy to check against
+     * @returns {boolean} True if the character is stomping the given enemy
+     */
     isCharacterStomping(enemy) {
         return this.character.isAboveGround() &&
             this.character.speedY < 0 &&
@@ -174,6 +210,10 @@ class World {
         }
     }
 
+    /**
+     * Passes a reference to this World object to all moveable entities,
+     * allowing them to access keyboard states and trigger world events.
+     */
     setWorld() {
         this.character.world = this;
         this.enemies.forEach(enemy => {
@@ -184,13 +224,18 @@ class World {
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.camera_x = -this.character.x + 100;
+        this.drawWorldComponents();
+        this.scheduleNextFrame();
+    }
 
+    drawWorldComponents() {
         this.ctx.translate(this.camera_x, 0);
         this.drawLevelObjects();
         this.ctx.translate(-this.camera_x, 0);
-
         this.drawFixedObjects();
+    }
 
+    scheduleNextFrame() {
         let self = this;
         requestAnimationFrame(function () {
             self.draw();
@@ -215,6 +260,11 @@ class World {
         }
     }
 
+    /**
+     * Handles drawing a moveable object onto the canvas, including horizontally 
+     * flipping the context if the object is facing the other direction.
+     * @param {MoveableObject} mo - The object to draw
+     */
     addToMap(mo) {
         if (mo.otherDirection) {
             this.flipImage(mo);

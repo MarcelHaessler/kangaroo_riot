@@ -26,6 +26,11 @@ class MoveableObject extends DrawableObject {
             this.y < mo.y + mo.height;
     }
 
+    /**
+     * Reduces the object's energy by the specified damage amount.
+     * Prevents energy from dropping below 0 and updates the last hit timestamp.
+     * @param {number} damage - The amount of damage to deal (default 12)
+     */
     hit(damage = 12) {
         this.energy -= damage;
         if (this.energy < 0) {
@@ -35,6 +40,11 @@ class MoveableObject extends DrawableObject {
         }
     }
 
+    /**
+     * Checks if the object has been hit within the last 1 second.
+     * Used mainly to trigger hurt/crash animations and invulnerability frames.
+     * @returns {boolean} True if hurt recently
+     */
     isHurt() {
         let timepassed = new Date().getTime() - this.lastHit; // Difference in ms
         timepassed = timepassed / 1000; // Difference in s

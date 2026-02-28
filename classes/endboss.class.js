@@ -20,7 +20,7 @@ class Endboss extends MoveableObject {
         this.loadImages(this.IMAGES_WALK);
         this.loadImages(this.IMAGES_LOSE);
         this.x = 4000; // Further back
-        this.speed = 0.4; // Significantly slower
+        this.speed = 0.6; // Significantly slower
         this.otherDirection = true;
         this.hitsToDefeat = Math.floor(Math.random() * 3) + 3; // 3, 4, or 5
         this.animate();

@@ -14,10 +14,18 @@ class DrawableObject {
 
     draw(ctx) {
         if (this.img) {
-            if (this.autoWidth && this.img.complete && this.img.naturalHeight > 0) {
-                this.width = this.height * (this.img.naturalWidth / this.img.naturalHeight);
-            }
+            this.updateAutoWidth();
             ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+        }
+    }
+
+    /**
+     * Dynamically calculates and sets the width of the object based on its configured height
+     * and the natural aspect ratio of the loaded image file.
+     */
+    updateAutoWidth() {
+        if (this.autoWidth && this.img.complete && this.img.naturalHeight > 0) {
+            this.width = this.height * (this.img.naturalWidth / this.img.naturalHeight);
         }
     }
 

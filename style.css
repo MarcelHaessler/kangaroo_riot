@@ -225,8 +225,9 @@ canvas {
 footer {
     position: fixed;
     bottom: 15px;
-    left: 0;
-    right: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
     text-align: center;
     font-family: LuckiestGuy, sans-serif;
     color: var(--headerColor);
@@ -302,54 +303,69 @@ footer a {
 }
 
 #mobile-controls {
-    display: none;
+    display: flex;
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    padding: 0 20px;
+    justify-content: space-between;
+    z-index: 100;
+    box-sizing: border-box;
+}
+
+#mobile-controls.d-none {
+    display: none !important;
+}
+
+.left-controls,
+.right-controls {
+    display: flex;
+    gap: 15px;
+}
+
+.mobile-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: rgba(91, 62, 48, 0.8);
+    color: var(--headerColor);
+    font-size: 24px;
+    border: 2px solid black;
+    font-family: inherit;
+    -webkit-text-stroke: 1px black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.mobile-btn:active {
+    background-color: rgba(91, 62, 48, 1);
+    transform: scale(0.9);
 }
 
 @media (max-width: 1000px) and (max-height: 450px) {
-    #mobile-controls {
-        display: flex;
-        position: fixed;
-        bottom: 10px;
-        left: 0;
-        right: 0;
-        padding: 0 20px;
-        justify-content: space-between;
-        z-index: 100;
-        box-sizing: border-box;
-    }
-
-    .left-controls,
-    .right-controls {
-        display: flex;
-        gap: 15px;
-    }
-
-    .mobile-btn {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background-color: rgba(91, 62, 48, 0.8);
-        color: var(--headerColor);
-        font-size: 24px;
-        border: 2px solid black;
-        font-family: inherit;
-        -webkit-text-stroke: 1px black;
-        display: flex;
+    body {
+        overflow: hidden;
         justify-content: center;
-        align-items: center;
-        user-select: none;
-        touch-action: manipulation;
+        padding: 0;
     }
 
-    .mobile-btn:active {
-        background-color: rgba(91, 62, 48, 1);
-        transform: scale(0.9);
+    header h1 {
+        font-size: 24px;
+        margin: 5px 0 0 0;
     }
 
     #game-container {
-        transform: scale(0.65);
-        transform-origin: top center;
-        margin-top: 0;
+        transform: scale(0.6);
+        transform-origin: center;
+        margin: -70px 0;
+    }
+
+    footer {
+        display: none !important;
     }
 }
 

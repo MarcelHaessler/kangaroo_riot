@@ -81,7 +81,12 @@ class Character extends MoveableObject {
     }
 
     playCharacterAnimation() {
-        // Walk animation (100ms)
+        this.animateWalk();
+        this.animateJump();
+        this.animateThrow();
+    }
+
+    animateWalk() {
         setInterval(() => {
             if (this.isHurt()) {
                 this.playAnimation(this.imagesCrash);
@@ -89,15 +94,17 @@ class Character extends MoveableObject {
                 this.playAnimation(this.imagesWalk);
             }
         }, 100);
+    }
 
-        // Jump animation (140ms - approx 1s total for 7 frames)
+    animateJump() {
         setInterval(() => {
             if (this.isAboveGround() && !this.isHurt()) {
                 this.playAnimationOnce(this.imagesJump);
             }
         }, 140);
+    }
 
-        // Throw animation (50ms - fast swipe)
+    animateThrow() {
         setInterval(() => {
             if (this.isThrowing) {
                 this.playAnimationOnce(this.imagesThrow);
@@ -105,6 +112,10 @@ class Character extends MoveableObject {
         }, 50);
     }
 
+    /**
+     * Triggers the throw animation by setting the isThrowing flag to true 
+     * for exactly 450ms, giving enough time to play all 9 frames.
+     */
     throwAnimation() {
         this.isThrowing = true;
         this.currentImage = 0;
@@ -113,6 +124,10 @@ class Character extends MoveableObject {
         }, 450); // 9 images * 50ms
     }
 
+    /**
+     * Checks if the left or right directional keys are currently pressed.
+     * @returns {boolean} True if the character should be moving horizontally
+     */
     isWalking() {
         return this.world.keyboard.RIGHT || this.world.keyboard.LEFT;
     }
